@@ -1,0 +1,68 @@
+package vstream.view
+
+import vstream.core.{Context, Payload}
+import vstream.edge.ConnectedSingleOutputEdge
+import vstream.graph.Graph
+import vstream.node.{Node, SingleOutputNode, SinkNode}
+
+trait Renderer {
+  val (w, h) = (100, 50)
+  def render(implicit context: Context): Unit = {
+    import context.ctx
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+    renderGraph(context.graph)
+
+    /*
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+    ctx.fillStyle = "black"
+    ctx.font = "20px 'Times New Roman'"
+    ctx.fillText("Hello Canvas", 20, 40, 200)
+    ctx.beginPath()
+    ctx.fillStyle = "rgba(0, 255, 0, .5)"
+    ctx.moveTo(30, 20)
+    ctx.lineTo(110, 20)
+    ctx.lineTo(120, 120)
+    ctx.lineTo(20, 120)
+    ctx.closePath()
+    ctx.stroke()
+    ctx.fill()
+    */
+  }
+  def renderGraph(graph: Graph)(implicit context: Context): Unit = {
+    renderNode(graph.entryPoint, Offset(0, 0))
+  }
+  def renderNode(node: Node, offset: Offset)(implicit context: Context): Unit = {
+    renderRect(offset)
+    renderQueue(node.queue, offset)
+    node match {
+      case singleOutputNode: SingleOutputNode =>
+        val targetNode = singleOutputNode.outputEdge.asInstanceOf[ConnectedSingleOutputEdge].targetNode
+        renderNode(targetNode, offset.move(150, 0))
+      case _: SinkNode =>
+    }
+  }
+  def renderRect(offset: Offset)(implicit context: Context): Unit = {
+    import context.ctx
+    import offset._
+    ctx.beginPath()
+    ctx.moveTo(x, y)
+    ctx.lineTo(x + w, y)
+    ctx.lineTo(x + w, y + h)
+    ctx.lineTo(x, y + h)
+    ctx.closePath()
+    ctx.stroke()
+  }
+  def renderQueue(queue: Seq[Payload], offset: Offset)(implicit context: Context): Unit = {
+    import context.ctx
+    import offset._
+    if (queue.nonEmpty) {
+      ctx.beginPath()
+      ctx.arc(x + 5, y + 5, 5, 0, Math.PI * 2)
+      ctx.closePath()
+      ctx.stroke()
+    }
+  }
+  case class Offset(x: Int, y: Int) {
+    def move(xd: Int, yd: Int): Offset = copy(x + xd, y + yd)
+  }
+}
