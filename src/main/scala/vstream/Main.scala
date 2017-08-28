@@ -35,7 +35,7 @@ object Main extends JSApp with Renderer with GraphUtil {
       graph.endPoint.onAction()
     }, 1000)
 
-    Context(ctx, graph)
+    Context(ctx, graph, CycleClock(100, 0))
   }
   def update(context: Context): Context = context
   def loop(context: Context): Unit = {
