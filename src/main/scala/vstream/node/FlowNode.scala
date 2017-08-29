@@ -4,7 +4,7 @@ import vstream.core.Payload
 
 trait FlowNode extends AnyRef with InputNode with OutputNode {
   override def onDemand(): Unit =
-    if (queue.nonEmpty) emit(dequeue())
+    if (hasPayload) emit(dequeue())
     else inputEdge.demand()
 }
 case class ThroughNode() extends FlowNode with SingleInputNode with SingleOutputNode

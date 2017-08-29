@@ -11,7 +11,8 @@ trait GraphUtil {
       (newFromNode.asInstanceOf[FROM], t.connectFrom(newFromNode).asInstanceOf[TO])
   }
   case class WeightedEdge(connectedSingleOutputEdge: ConnectedSingleOutputEdge, weight: Int) extends SingleOutputEdge {
-    override def send(payload: Payload): Unit = connectedSingleOutputEdge.send(payload)
+    override def flush(): Unit = ???
+    override def put(payload: Payload): Unit = connectedSingleOutputEdge.put(payload)
   }
   implicit class WeightedEdgeWrapper(connectedSingleOutputEdge: ConnectedSingleOutputEdge) {
     def withWeight(weight: Int): WeightedEdge = WeightedEdge(connectedSingleOutputEdge, weight)
