@@ -31,17 +31,17 @@ object Main extends JSApp with Renderer with GraphUtil {
     }
     val ctx = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
 
-    dom.window.setInterval(() => {
-      graph.endPoint.onAction()
-    }, 1000)
-
-    Context(ctx, graph, CycleClock(100, 0))
+    Context(ctx, graph, CycleClock(20, 0))
   }
-  def update(context: Context): Context = context
+  def update(context: Context): Context = {
+    val newClock = context.clock.update()
+    if (newClock.cleared) context.graph.endPoint.onAction()
+    context.copy(clock = newClock)
+  }
   def loop(context: Context): Unit = {
-    update(context)
-    render(context)
-    dom.window.setTimeout(() => loop(context), 100)
+    val newContext = update(context)
+    render(newContext)
+    dom.window.setTimeout(() => loop(newContext), 50)
     // dom.window.requestAnimationFrame((_:Double) => loop(context))
   }
 }

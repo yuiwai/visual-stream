@@ -5,7 +5,7 @@ import vstream.core.Payload
 trait SinkNode extends InputNode {
   def onAction(): Unit =
     if (hasPayload) dequeue()
-     else inputEdge.demand()
+    else inputEdge.demand()
   def onReceive(payload: Payload): Unit
   override def receive(payload: Payload): Unit = {
     onReceive(payload)

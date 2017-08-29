@@ -36,10 +36,27 @@ trait Renderer {
     renderQueue(node.queue, offset)
     node match {
       case singleOutputNode: SingleOutputNode =>
-        val targetNode = singleOutputNode.outputEdge.asInstanceOf[ConnectedSingleOutputEdge].targetNode
+        val outputEdge = singleOutputNode.outputEdge.asInstanceOf[ConnectedSingleOutputEdge]
+        val targetNode = outputEdge.targetNode
+        renderEdge(outputEdge, offset.move(100, 25))
         renderNode(targetNode, offset.move(150, 0))
       case _: SinkNode =>
     }
+  }
+  def renderEdge(outputEdge: ConnectedSingleOutputEdge, offset: Offset)(implicit context: Context): Unit = {
+    import context.ctx
+    import context.clock
+    import offset._
+    ctx.beginPath()
+    ctx.moveTo(x, y)
+    ctx.lineTo(x + 50, y)
+    if (outputEdge.hasPayload) {
+      ctx.fillStyle = outputEdge.queue.head.color
+      ctx.arc(x + 50 * (clock.current.toFloat / clock.cycle), y, 5, 0, Math.PI * 2)
+      ctx.closePath()
+      ctx.fill()
+    }
+    ctx.stroke()
   }
   def renderRect(offset: Offset)(implicit context: Context): Unit = {
     import context.ctx
@@ -55,11 +72,13 @@ trait Renderer {
   def renderQueue(queue: Seq[Payload], offset: Offset)(implicit context: Context): Unit = {
     import context.ctx
     import offset._
-    if (queue.nonEmpty) {
+    queue.foreach { payload =>
       ctx.beginPath()
+      ctx.fillStyle = payload.color
       ctx.arc(x + 5, y + 5, 5, 0, Math.PI * 2)
       ctx.closePath()
       ctx.stroke()
+      ctx.fill()
     }
   }
   case class Offset(x: Int, y: Int) {
