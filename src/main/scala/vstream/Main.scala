@@ -6,7 +6,7 @@ import org.scalajs.dom.raw.{CanvasRenderingContext2D, MouseEvent}
 import vstream.core._
 import vstream.generator.RotationGenerator
 import vstream.graph.GraphUtil
-import vstream.node.{ManualSourceNode, ThroughNode, TraceSinkNode}
+import vstream.node.{Broadcast, ManualSourceNode, ThroughNode, TraceSinkNode}
 import vstream.view.Renderer
 
 import scala.scalajs.js.JSApp
@@ -18,6 +18,7 @@ object Main extends JSApp with Renderer with GraphUtil {
   }
   def initialize(canvas: Canvas): Context = {
     val graph = (ManualSourceNode(RotationGenerator(Seq(SamplePayload1, SamplePayload2, SamplePayload3))) -->
+      Broadcast() -->
       ThroughNode()) -->
       // FilterNode(_.isInstanceOf[SamplePayload2.type]) -->
       TraceSinkNode()

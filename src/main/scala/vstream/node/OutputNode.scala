@@ -26,6 +26,11 @@ trait SingleOutputNode extends OutputNode {
 }
 trait MultipleOutputNode extends OutputNode {
   override type OutputEdgeType = MultipleOutputEdge
+  private var _outputEdge: OutputEdgeType = OpenMultipleOutputEdge(Seq.empty)
   override def emit(payload: Payload): Unit = outputEdge(select(payload)).put(payload)
   def select(payload: Payload): Int
+  def connectTo(inputNode: SingleInputNode): MultipleOutputNode = {
+    _outputEdge = _outputEdge.connectTo(inputNode)
+    this
+  }
 }

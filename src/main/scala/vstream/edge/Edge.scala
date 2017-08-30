@@ -37,14 +37,20 @@ case object UnconnectedSingleOutputEdge extends SingleOutputEdge {
   def connectedTo(targetNode: InputNode): ConnectedSingleOutputEdge = ConnectedSingleOutputEdge(targetNode)
 }
 trait MultipleOutputEdge extends OutputEdge {
-  def apply(index: Int): SingleOutputEdge
+  val edges: Seq[SingleOutputEdge]
+  def apply(index: Int): SingleOutputEdge = edges(index)
+  def connectTo(inputNode: InputNode): MultipleOutputEdge
 }
 case class OpenMultipleOutputEdge(edges: Seq[SingleOutputEdge]) extends MultipleOutputEdge {
   override def flush(): Unit = ???
   override def apply(index: Int): SingleOutputEdge = sys.error("can't select output edge, this contains unconnected edge.")
+  override def connectTo(inputNode: InputNode): MultipleOutputEdge =
+    if (edges.nonEmpty) copy(edges :+ ConnectedSingleOutputEdge(inputNode))
+    else ClosedMultipleOutputEdge(Seq(ConnectedSingleOutputEdge(inputNode)))
 }
 case class ClosedMultipleOutputEdge(edges: Seq[ConnectedSingleOutputEdge]) extends MultipleOutputEdge {
   override def flush(): Unit = ???
   override def apply(index: Int): SingleOutputEdge = edges(index)
+  override def connectTo(inputNode: InputNode): MultipleOutputEdge = copy(edges :+ ConnectedSingleOutputEdge(inputNode))
 }
 

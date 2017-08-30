@@ -9,6 +9,9 @@ trait GraphUtil {
     case (f: SingleOutputNode, t: SingleInputNode) =>
       val newFromNode = f.connectTo(t)
       (newFromNode.asInstanceOf[FROM], t.connectFrom(newFromNode).asInstanceOf[TO])
+    case (f: MultipleOutputNode, t: SingleInputNode) =>
+      val newFromNode = f.connectTo(t)
+      (newFromNode.asInstanceOf[FROM], t.connectFrom(newFromNode).asInstanceOf[TO])
   }
   case class WeightedEdge(connectedSingleOutputEdge: ConnectedSingleOutputEdge, weight: Int) extends SingleOutputEdge {
     override def flush(): Unit = ???

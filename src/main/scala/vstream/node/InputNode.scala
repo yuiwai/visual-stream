@@ -16,6 +16,10 @@ trait SingleInputNode extends InputNode {
     _inputEdge = ConnectedSingleInputEdge(singleOutputNode)
     this
   }
+  def connectFrom(multipleOutputNode: MultipleOutputNode): SingleInputNode = {
+    _inputEdge = ConnectedSingleInputEdge(multipleOutputNode)
+    this
+  }
 }
 trait MultipleInputNode extends InputNode {
   override type InputEdgeType = MultipleInputEdge
