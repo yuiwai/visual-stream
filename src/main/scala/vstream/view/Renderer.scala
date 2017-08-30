@@ -11,22 +11,6 @@ trait Renderer {
     import context.ctx
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
     renderGraph(context.graph)
-
-    /*
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-    ctx.fillStyle = "black"
-    ctx.font = "20px 'Times New Roman'"
-    ctx.fillText("Hello Canvas", 20, 40, 200)
-    ctx.beginPath()
-    ctx.fillStyle = "rgba(0, 255, 0, .5)"
-    ctx.moveTo(30, 20)
-    ctx.lineTo(110, 20)
-    ctx.lineTo(120, 120)
-    ctx.lineTo(20, 120)
-    ctx.closePath()
-    ctx.stroke()
-    ctx.fill()
-    */
   }
   def renderGraph(graph: Graph)(implicit context: Context): Unit = {
     renderNode(graph.entryPoint, Offset(0, 0))
@@ -72,10 +56,10 @@ trait Renderer {
   def renderQueue(queue: Seq[Payload], offset: Offset)(implicit context: Context): Unit = {
     import context.ctx
     import offset._
-    queue.foreach { payload =>
+    queue.zipWithIndex.foreach { case (payload, i) =>
       ctx.beginPath()
       ctx.fillStyle = payload.color
-      ctx.arc(x + 5, y + 5, 5, 0, Math.PI * 2)
+      ctx.arc(x + (10 * (i + 1)), y + 35, 5, 0, Math.PI * 2)
       ctx.closePath()
       ctx.stroke()
       ctx.fill()
