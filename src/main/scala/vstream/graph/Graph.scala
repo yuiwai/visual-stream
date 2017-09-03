@@ -1,14 +1,14 @@
 package vstream.graph
 
-import vstream.node.{SinkNode, SourceNode}
+import vstream.node.{SinkNodeLike, SourceNode}
 
 trait Graph {
   val entryPoint: SourceNode
-  val endPoint: SinkNode
+  val endPoint: SinkNodeLike
 }
 object Graph {
-  def apply(sourceNode: SourceNode, sinkNode: SinkNode): Graph = new Graph {
+  def apply(sourceNode: SourceNode, sinkNodeLike: SinkNodeLike): Graph = new Graph {
     override val entryPoint: SourceNode = sourceNode
-    override val endPoint: SinkNode = sinkNode
+    override val endPoint: SinkNodeLike = sinkNodeLike
   }
 }

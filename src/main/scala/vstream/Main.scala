@@ -6,7 +6,7 @@ import org.scalajs.dom.raw.{CanvasRenderingContext2D, MouseEvent}
 import vstream.core._
 import vstream.generator.RotationGenerator
 import vstream.graph.GraphUtil
-import vstream.node.{Broadcast, ManualSourceNode, ThroughNode, TraceSinkNode}
+import vstream.node._
 import vstream.view.Renderer
 
 import scala.scalajs.js.JSApp
@@ -17,11 +17,13 @@ object Main extends JSApp with Renderer with GraphUtil {
     loop(initialize(canvas))
   }
   def initialize(canvas: Canvas): Context = {
-    val graph = (ManualSourceNode(RotationGenerator(Seq(SamplePayload1, SamplePayload2, SamplePayload3))) -->
-      Broadcast() -->
-      ThroughNode()) -->
-      // FilterNode(_.isInstanceOf[SamplePayload2.type]) -->
-      TraceSinkNode()
+    val graph = ManualSourceNode(1, RotationGenerator(Seq(SamplePayload1, SamplePayload2, SamplePayload3))) -->
+      Broadcast(2) -->
+      Seq(
+        ThroughNode(3) --> TraceSinkNode(4),
+        ThroughNode(5) --> TraceSinkNode(6),
+        FilterNode(7, _.isInstanceOf[SamplePayload2.type]) --> TraceSinkNode(8)
+      )
 
     // Input Handling
     // TODO coordinate position. println(canvas.offsetLeft, canvas.offsetTop)
@@ -32,12 +34,12 @@ object Main extends JSApp with Renderer with GraphUtil {
     }
     val ctx = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
 
-    Context(ctx, graph, CycleClock(20, 0))
+    Context(ctx, graph, CycleClock(20, 0), 0)
   }
   def update(context: Context): Context = {
     val newClock = context.clock.update()
-    if (newClock.cleared) context.graph.endPoint.onAction()
-    context.copy(clock = newClock)
+    if (newClock.cleared) context.graph.endPoint.onAction(context.sequence)
+    context.copy(clock = newClock, sequence = context.sequence + 1)
   }
   def loop(context: Context): Unit = {
     val newContext = update(context)
@@ -45,5 +47,3 @@ object Main extends JSApp with Renderer with GraphUtil {
     dom.window.setTimeout(() => loop(newContext), 50)
   }
 }
-
-

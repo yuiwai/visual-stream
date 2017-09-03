@@ -6,5 +6,5 @@ trait SourceNode extends OutputNode {
   val generator: Generator
   def onAction(): Unit = if (hasSpace) enqueue(generator.generate())
 }
-case class ManualSourceNode(generator: Generator) extends SourceNode with SingleOutputNode
+case class ManualSourceNode(nodeId: Int, generator: Generator) extends SourceNode with SingleOutputNode
 
