@@ -13,10 +13,10 @@ trait SinkNode extends InputNode with SinkNodeLike {
     super.receive(payload)
   }
 }
-case class IgnoreSinkNode(nodeId: Int) extends SinkNode with SingleInputNode {
+case class IgnoreSinkNode(nodeName: String) extends SinkNode with SingleInputNode {
   override def onReceive(payload: Payload): Unit = () // do nothing
 }
-case class TraceSinkNode(nodeId: Int) extends SinkNode with SingleInputNode {
+case class TraceSinkNode(nodeName: String) extends SinkNode with SingleInputNode {
   override def onReceive(payload: Payload): Unit = println(payload)
 }
 trait SinkNodeLike {

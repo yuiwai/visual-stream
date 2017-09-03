@@ -17,12 +17,12 @@ object Main extends JSApp with Renderer with GraphUtil {
     loop(initialize(canvas))
   }
   def initialize(canvas: Canvas): Context = {
-    val graph = ManualSourceNode(1, RotationGenerator(Seq(SamplePayload1, SamplePayload2, SamplePayload3))) -->
-      Broadcast(2) -->
+    val graph = ManualSourceNode("ManualSource", RotationGenerator(Seq(SamplePayload1, SamplePayload2, SamplePayload3))) -->
+      Broadcast("BroadCast") -->
       Seq(
-        ThroughNode(3) --> TraceSinkNode(4),
-        ThroughNode(5) --> TraceSinkNode(6),
-        FilterNode(7, _.isInstanceOf[SamplePayload2.type]) --> TraceSinkNode(8)
+        ThroughNode("Through1") --> TraceSinkNode("Sink1"),
+        ThroughNode("Through2") --> TraceSinkNode("Sink2"),
+        FilterNode("Green Filter", _.isInstanceOf[SamplePayload2.type]) --> TraceSinkNode("Sink3")
       )
 
     // Input Handling

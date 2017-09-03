@@ -11,11 +11,11 @@ trait FlowNode extends AnyRef with InputNode with OutputNode {
     if (hasSpace) inputEdge.demand(sequence, this)
   }
 }
-case class ThroughNode(nodeId: Int) extends FlowNode with SingleInputNode with SingleOutputNode
-case class FilterNode(nodeId: Int, filter: Payload => Boolean) extends FlowNode with SingleInputNode with SingleOutputNode {
+case class ThroughNode(nodeName: String) extends FlowNode with SingleInputNode with SingleOutputNode
+case class FilterNode(nodeName: String, filter: Payload => Boolean) extends FlowNode with SingleInputNode with SingleOutputNode {
   override def receive(payload: Payload): Unit = if (filter(payload)) enqueue(payload)
 }
-case class Broadcast(nodeId: Int) extends FlowNode with SingleInputNode with MultipleOutputNode {
+case class Broadcast(nodeName: String) extends FlowNode with SingleInputNode with MultipleOutputNode {
   private var _queues: Map[InputNode, mutable.Queue[Payload]] = Map.empty
   private var _lastSequence: Int = 0
   def emitTo(payload: Payload, demandant: InputNode): Unit = outputEdge.edges(demandant).put(payload)
