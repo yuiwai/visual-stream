@@ -21,7 +21,7 @@ object Main extends JSApp with Renderer with GraphUtil {
       Broadcast("BroadCast") -->
       Seq(
         ThroughNode("Through1") --> TraceSinkNode("Sink1"),
-        ThroughNode("Through2") --> TraceSinkNode("Sink2"),
+        ThroughNode("Through2") --> SlowSink("SlowSink1"),
         FilterNode("Green Filter", _.isInstanceOf[SamplePayload2.type]) --> TraceSinkNode("Sink3")
       )
 

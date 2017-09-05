@@ -16,4 +16,13 @@ case object SamplePayload1 extends Payload with Red
 case object SamplePayload2 extends Payload with Green
 case object SamplePayload3 extends Payload with Blue
 
-trait WrappedPayload extends Payload
+trait CountablePayload extends Payload {
+  private var _count = 0
+  def count: Int = _count
+  def inc: Int = {
+    _count += 1
+    _count
+  }
+}
+
+class PayloadWrapper(payload: Payload)
