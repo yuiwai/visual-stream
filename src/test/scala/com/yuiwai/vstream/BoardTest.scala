@@ -9,7 +9,9 @@ object BoardTest extends TestSuite {
       assert(board.size == 1)
     }
     "send" - {
-      Board().send(NodeId(1), 1)
+      var i = 0
+      Board({ case _: BoardEvent => i = i + 1 }).send(NodeId(1), 1)
+      assert(i == 1)
     }
   }
 }
