@@ -1,7 +1,7 @@
 name := "visual-stream"
 organization in ThisBuild := "com.yuiwai"
 version in ThisBuild := "2.0.0-SNAPSHOT"
-scalaVersion in ThisBuild := "2.12.6"
+scalaVersion in ThisBuild := "2.12.7"
 scalacOptions in ThisBuild ++= Seq(
   "-deprecation",
   "-feature",

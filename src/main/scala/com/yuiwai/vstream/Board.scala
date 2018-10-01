@@ -15,7 +15,14 @@ case class Board[T] private(
   }
   def send(nodeId: NodeId, message: T): Board[T] = {
     callback(MessageSent())
-    this
+    nodes.get(nodeId) match {
+      case Some(node) =>
+        callback(MessageDelivered())
+        this
+      case None =>
+        callback(MessageDeliveryFailed())
+        this
+    }
   }
 }
 
@@ -31,3 +38,5 @@ object Board {
 sealed trait BoardEvent
 final case class NodeAdded() extends BoardEvent
 final case class MessageSent() extends BoardEvent
+final case class MessageDelivered() extends BoardEvent
+final case class MessageDeliveryFailed() extends BoardEvent
