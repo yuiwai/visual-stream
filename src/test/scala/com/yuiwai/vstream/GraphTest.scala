@@ -9,8 +9,12 @@ object GraphTest extends TestSuite {
     "run" - {
       Graph.empty.run(Map.empty)
     }
+    "add node" - {
+      assert(Graph.empty.add(NodeId(1)(SourceNode(SilentOutput()))).size == 1)
+      assert(Graph.empty.add(NodeId(1)(FlowNode(SilentInput(), SilentOutput()))).size == 1)
+      assert(Graph.empty.add(NodeId(1)(SinkNode(SilentInput()))).size == 1)
+    }
     "edge" - {
-
     }
   }
 }

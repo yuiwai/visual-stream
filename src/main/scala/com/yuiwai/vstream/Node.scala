@@ -4,8 +4,8 @@ sealed trait Node[+T] {
   val input: Input[T]
   val output: Output[T]
 }
-case class NodeId(id: Int) extends AnyVal {
-  def pipe[T](f: NodeId => T): T = f(this)
+case class NodeId[+N <: Node[_]](id: Int)(private[vstream] val node: N) {
+  def pipe[T](f: NodeId[N] => T): T = f(this)
 }
 
 sealed trait Input[+T]
@@ -16,11 +16,12 @@ sealed trait Output[+T]
 case object NoOutput extends Output[Nothing]
 case class SilentOutput[T]() extends Output[T]
 
-final case class SourceNode[T](output: Output[T]) extends Node[T] {
+sealed trait ShapedNode
+final case class SourceNode[T](output: Output[T]) extends Node[T] with ShapedNode {
   val input: Input[T] = NoInput
 }
-final case class FlowNode[T](input: Input[T], output: Output[T]) extends Node[T]
-final case class SinkNode[T](input: Input[T]) extends Node[T] {
+final case class FlowNode[T](input: Input[T], output: Output[T]) extends Node[T] with ShapedNode
+final case class SinkNode[T](input: Input[T]) extends Node[T] with ShapedNode {
   val output: Output[T] = NoOutput
 }
 case object SilentNode extends Node[Nothing] {

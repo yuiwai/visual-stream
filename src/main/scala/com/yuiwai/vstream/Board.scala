@@ -5,18 +5,18 @@ import java.util.concurrent.atomic.AtomicInteger
 import com.yuiwai.vstream.Board.Callback
 
 case class Board[T] private(
-  private val nodes: Map[NodeId, Node[_]],
+  private val nodes: Map[NodeId[Node[T]], Node[T]],
   private val callback: Callback) {
   private val i: AtomicInteger = new AtomicInteger()
   def size: Int = nodes.size
-  def register(node: => Node[T]): (Board[T], NodeId) = NodeId(i.incrementAndGet()).pipe { id =>
+  def register[N <: Node[T]](node: => N): (Board[T], NodeId[N]) = NodeId(i.incrementAndGet())(node).pipe { id =>
     callback(NodeAdded())
     copy[T](nodes + (id -> node)) -> id
   }
-  def send(nodeId: NodeId, message: T): Board[T] = {
+  def send[N <: Node[T]](nodeId: NodeId[N], message: T): Board[T] = {
     callback(MessageSent())
     nodes.get(nodeId) match {
-      case Some(node) =>
+      case Some(_) =>
         callback(MessageDelivered())
         this
       case None =>
